@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+{% block content %}
+<a class="btn btn-primary btn-sm mt-1 mb-2" href="{{ url_for('new_story') }}">New story</a>
+{% for story in stories %}
+<a data-toggle="modal" href="#storyModal">
+<img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + story.poster.image_file) }}" href="">
+</a>
+<!-- Story Modal -->  
+<div class="modal fade" id="storyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header" >{{story.media}}
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <img src="{{ url_for('static', filename='story_pictures/' + story.media) }}" ></img>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>  
+{% endfor %}
+</br></br>
+<a class="btn btn-primary btn-sm mt-1 mb-2" href="{{ url_for('new_post') }}">New post</a>
+    {% for post in posts.items %}
+        <article class="media content-section">
+          <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="{{ url_for('user_account' , username= post.author.username) }}">{{ post.author.username }}</a>
+              <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+            </div>
+            <h2><a class="article-title" href=" {{ url_for('post' , post_id=post.id) }}">{{ post.title }}</a></h2>
+            <p class="article-content" style="color: #707171 ; ">{{ post.content }}</p>
+            {% if post.image %}
+            <img class="" src="/static/post_pictures/{{ post.image }}">
+            {% endif %}
+         
+            
+
+<!-- LIKE -->
+<section id="like" class="rating">
+  <label id="nbr" style="color : red;" > {{post.number_of_reactions}} </label>
+  <!-- <input type="radio" id="heart_5" name="like" value="4" onchange="likehandle($(this).val(),{{ post.id }} , {{ current_user.id }} )"/>
+  <label for="heart_5" title="Five">&#10084;</label>
+  
+  <input type="radio" id="heart_4" name="like" value="3" onchange="likehandle($(this).val(),{{ post.id }} , {{ current_user.id }})"/>
+  <label for="heart_4" title="Four">&#10084;</label>
+  
+  <input type="radio" id="heart_3" name="like" value="2" onchange="likehandle($(this).val(),{{ post.id }} , {{ current_user.id }})"/>
+  <label for="heart_3" title="Three">&#10084;</label>
+  
+  <input type="radio" id="heart_2" name="like" value="1" onchange="likehandle($(this).val(),{{ post.id }} , {{ current_user.id }})"/>
+  <label for="heart_2" title="Two">&#10084;</label>
+  <!-- SECOND HEART -->
+  <input type="radio" id="heart_1" name="like" value="0" onchange="likehandle($(this).val(),{{ post.id }} , {{ current_user.id }});" />
+  {% if post in liked %}
+  <label for="heart_1" title="One" style="color:red;">&#10084;</label>
+  {% else %}
+  <label for="heart_1" title="One">&#10084;</label>
+  {% endif %}
+  <!-- FIRST HEART -->
+
+</section>
+
+          </div>
+        </article>
+    {% endfor %}
+   {% if posts != None %}
+     {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% if page_num %}
+        {% if posts.page == page_num %}
+          <a class="btn btn-info mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+        {% else %}
+          <a class="btn btn-outline-info mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+        {% endif %}
+      {% else %}
+        ...
+      {% endif %}
+    
+{% endfor %}
+      {% endif %}
+{% endblock content %}
